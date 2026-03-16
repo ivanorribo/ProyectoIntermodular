@@ -5,7 +5,7 @@ module com.hidragri {
     requires mysql.connector.j;
     requires jbcrypt;
 
-    opens hidragri.controllers to javafx.fxml;
+    opens hidragri.control to javafx.fxml;
     opens hidragri.models to javafx.base;
     exports hidragri;
 }

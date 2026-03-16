@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hidragri.control.Controller" styleClass="root-pane">
+    <padding>
+        <Insets bottom="30.0" left="50.0" right="50.0" top="30.0"/>
+    </padding>
+
+    <Label text="Sistema Integrado HidrAgri" styleClass="title-label"/>
+
+    <GridPane vgap="15" hgap="15" alignment="CENTER">
+        <Label text="Identificador:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <TextField fx:id="txtUsername" GridPane.columnIndex="1" GridPane.rowIndex="0" focusTraversable="true"/>
+
+        <Label text="Credencial:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        <PasswordField fx:id="txtPassword" GridPane.columnIndex="1" GridPane.rowIndex="1" focusTraversable="true"/>
+    </GridPane>
+
+    <Button fx:id="btnLogin" text="_Acceder al Sistema" onAction="#handleLogin" mnemonicParsing="true" focusTraversable="true"/>
+
+    <Label fx:id="lblFeedback" textFill="#d32f2f" visible="false" styleClass="error-label"/>
+
+    <Separator/>
+    <Button fx:id="btnAltoContraste" text="Activar Modo _Visual (Alto Contraste)" onAction="#toggleHighContrast" mnemonicParsing="true" focusTraversable="true"/>
+</VBox>

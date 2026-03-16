@@ -1,0 +1,19 @@
+/* Inversión total de colores para maximizar ratio de contraste WCAG */
+.root-pane,.root { -fx-background-color: #000000; }
+.label,.title-label { -fx-text-fill: #FFFF00; -fx-font-weight: bold; }
+.text-field,.password-field {
+    -fx-background-color: #000000;
+    -fx-text-fill: #FFFFFF;
+    -fx-border-color: #FFFF00;
+    -fx-border-width: 2px;
+}
+.button {
+    -fx-background-color: #000000;
+    -fx-text-fill: #FFFF00;
+    -fx-border-color: #FFFF00;
+    -fx-border-width: 2px;
+}
+.button:focused,.button:hover {
+    -fx-background-color: #FFFF00;
+    -fx-text-fill: #000000;
+}
