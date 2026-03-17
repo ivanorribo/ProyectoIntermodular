@@ -13,7 +13,7 @@ public class PasswordUtil {
 
     // Metodo auxiliar para que puedas generar tu propia contraseña de prueba y guardarla en MySQL
     public static void main(String[] args) {
-        String myPass = "admin123";
+        String myPass = "admin1234";
         String hashGenerado = hashPassword(myPass);
         System.out.println("Hash para contraseña en base de datos: " + hashGenerado);
     }
