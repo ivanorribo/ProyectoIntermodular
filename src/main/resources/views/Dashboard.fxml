@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hidragri.control.DashboardController" styleClass="root-pane">
+    <top>
+        <MenuBar>
+            <Menu text="Archivo">
+                <MenuItem text="Cerrar Sistema" onAction="#handleExit"/>
+            </Menu>
+            <Menu text="Gestión Territorial">
+                <MenuItem text="Listar Fincas"/>
+                <MenuItem text="Listar Parcelas"/>
+            </Menu>
+        </MenuBar>
+    </top>
+    <center>
+        <VBox alignment="CENTER" spacing="20.0">
+            <Label text="Bienvenido al Dashboard de HidrAgri" styleClass="title-label" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+            <Label text="Selecciona una opción en el menú superior para comenzar a administrar."/>
+        </VBox>
+    </center>
+</BorderPane>

@@ -4,14 +4,14 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class DBConecction {
-    private static DBConecction instance;
+public class DBConnection {
+    private static DBConnection instance;
     private Connection connection;
     private final String url = "jdbc:mysql://localhost:3306/hidragri_db";
     private final String user = "orribo";
     private final String password = "Stormbreaker24.";
 
-    private DBConecction() {
+    private DBConnection() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             this.connection = DriverManager.getConnection(url, user, password);
@@ -20,10 +20,10 @@ public class DBConecction {
         }
     }
 
-    public static DBConecction getInstance() {
+    public static DBConnection getInstance() {
         try {
-            if (instance == null | instance.getConnection().isClosed()) {
-                instance = new DBConecction();
+            if (instance == null || instance.getConnection().isClosed()) {
+                instance = new DBConnection();
             }
         } catch (SQLException e) {
             e.printStackTrace();

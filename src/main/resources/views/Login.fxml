@@ -8,7 +8,7 @@
         <Insets bottom="30.0" left="50.0" right="50.0" top="30.0"/>
     </padding>
 
-    <Label text="Sistema Integrado HidrAgri" styleClass="title-label"/>
+    <Label text="Sistema Integrado HidrAgri" styleClass="title-label" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
 
     <GridPane vgap="15" hgap="15" alignment="CENTER">
         <Label text="Identificador:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
