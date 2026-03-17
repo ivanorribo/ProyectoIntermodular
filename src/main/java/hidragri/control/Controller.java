@@ -2,6 +2,7 @@ package hidragri.control;
 
 import hidragri.crud.UsuarioDAO;
 import hidragri.models.Usuario;
+import hidragri.utils.Sesion;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -44,6 +45,10 @@ public class Controller {
 
         if (usuarioValidado!= null) {
             lblFeedback.setVisible(false);
+
+            // GUARDAMOS EL USUARIO EN LA SESIÓN GLOBAL
+            Sesion.getInstance().setUsuarioLogueado(usuarioValidado);
+
             cargarVentanaPrincipal();
         } else {
             mostrarError("Usuario o contraseña incorrectos.");
@@ -55,23 +60,21 @@ public class Controller {
         lblFeedback.setVisible(true);
     }
 
-    // Método que realiza la transición de escenas una vez logueado
     private void cargarVentanaPrincipal() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Dashboard.fxml"));
             Parent root = loader.load();
 
-            // Obtenemos el Stage (ventana) actual desde cualquier elemento de la interfaz
             Stage stage = (Stage) txtUsername.getScene().getWindow();
-            Scene scene = new Scene(root, 1024, 768);
+            Scene scene = new Scene(root, 1024, 600);
 
-            // Mantenemos el estado de accesibilidad si estaba activado
             if (modoAltoContraste) {
                 scene.getStylesheets().add(getClass().getResource("/css/high-contrast.css").toExternalForm());
             }
 
             stage.setScene(scene);
             stage.setTitle("HidrAgri - Dashboard Principal");
+            stage.centerOnScreen();
 
         } catch (IOException e) {
             e.printStackTrace();

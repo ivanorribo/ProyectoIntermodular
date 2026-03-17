@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 
 <BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hidragri.control.DashboardController" styleClass="root-pane">
     <top>
@@ -8,16 +10,64 @@
             <Menu text="Archivo">
                 <MenuItem text="Cerrar Sistema" onAction="#handleExit"/>
             </Menu>
-            <Menu text="Gestión Territorial">
-                <MenuItem text="Listar Fincas"/>
-                <MenuItem text="Listar Parcelas"/>
-            </Menu>
         </MenuBar>
     </top>
+
+    <left>
+        <VBox spacing="15.0" style="-fx-background-color: #f4f4f4; -fx-border-color: #cccccc; -fx-border-width: 0 1 0 0;">
+            <padding><Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/></padding>
+            <Label text="Gestión de Fincas" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+            <TextField fx:id="txtIdFinca" visible="false" managed="false"/>
+
+            <Label text="Nombre de la Finca:"/>
+            <TextField fx:id="txtNombre" promptText="Ej: Finca El Teide"/>
+
+            <Label text="Ubicación:"/>
+            <TextField fx:id="txtUbicacion" promptText="Municipio / Zona"/>
+
+            <Label text="Referencia Catastral:"/>
+            <TextField fx:id="txtRefCatastral" promptText="20 caracteres"/>
+
+            <Label text="Hectáreas (Ha):"/>
+            <TextField fx:id="txtHectareas" promptText="Ej: 5.5"/>
+
+            <HBox spacing="10.0" alignment="CENTER">
+                <Button text="Crear" onAction="#crearFinca" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+                <Button text="Actualizar" onAction="#actualizarFinca" style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
+            </HBox>
+            <HBox spacing="10.0" alignment="CENTER">
+                <Button text="Eliminar" onAction="#eliminarFinca" style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
+                <Button text="Limpiar" onAction="#limpiarFormulario"/>
+            </HBox>
+
+            <Label fx:id="lblMensaje" textFill="#d32f2f" visible="false" wrapText="true"/>
+        </VBox>
+    </left>
+
     <center>
-        <VBox alignment="CENTER" spacing="20.0">
-            <Label text="Bienvenido al Dashboard de HidrAgri" styleClass="title-label" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
-            <Label text="Selecciona una opción en el menú superior para comenzar a administrar."/>
+        <VBox spacing="10.0">
+            <padding><Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/></padding>
+            <Label fx:id="lblBienvenida" style="-fx-font-size: 16px;"/>
+            <TableView fx:id="tablaFincas" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="colId" text="ID" prefWidth="50">
+                        <cellValueFactory><PropertyValueFactory property="idFinca"/></cellValueFactory>
+                    </TableColumn>
+                    <TableColumn fx:id="colNombre" text="Nombre" prefWidth="150">
+                        <cellValueFactory><PropertyValueFactory property="nombre"/></cellValueFactory>
+                    </TableColumn>
+                    <TableColumn fx:id="colUbicacion" text="Ubicación" prefWidth="150">
+                        <cellValueFactory><PropertyValueFactory property="ubicacion"/></cellValueFactory>
+                    </TableColumn>
+                    <TableColumn fx:id="colRefCatastral" text="Ref. Catastral" prefWidth="150">
+                        <cellValueFactory><PropertyValueFactory property="refCatastral"/></cellValueFactory>
+                    </TableColumn>
+                    <TableColumn fx:id="colHectareas" text="Hectáreas" prefWidth="100">
+                        <cellValueFactory><PropertyValueFactory property="hectareas"/></cellValueFactory>
+                    </TableColumn>
+                </columns>
+            </TableView>
         </VBox>
     </center>
 </BorderPane>
