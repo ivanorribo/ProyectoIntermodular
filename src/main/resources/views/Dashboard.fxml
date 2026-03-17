@@ -7,67 +7,156 @@
 <BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hidragri.control.DashboardController" styleClass="root-pane">
     <top>
         <MenuBar>
-            <Menu text="Archivo">
+            <Menu text="Sistema">
                 <MenuItem text="Cerrar Sistema" onAction="#handleExit"/>
             </Menu>
         </MenuBar>
     </top>
 
-    <left>
-        <VBox spacing="15.0" style="-fx-background-color: #f4f4f4; -fx-border-color: #cccccc; -fx-border-width: 0 1 0 0;">
-            <padding><Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/></padding>
-            <Label text="Gestión de Fincas" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
-
-            <TextField fx:id="txtIdFinca" visible="false" managed="false"/>
-
-            <Label text="Nombre de la Finca:"/>
-            <TextField fx:id="txtNombre" promptText="Ej: Finca El Teide"/>
-
-            <Label text="Ubicación:"/>
-            <TextField fx:id="txtUbicacion" promptText="Municipio / Zona"/>
-
-            <Label text="Referencia Catastral:"/>
-            <TextField fx:id="txtRefCatastral" promptText="20 caracteres"/>
-
-            <Label text="Hectáreas (Ha):"/>
-            <TextField fx:id="txtHectareas" promptText="Ej: 5.5"/>
-
-            <HBox spacing="10.0" alignment="CENTER">
-                <Button text="Crear" onAction="#crearFinca" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
-                <Button text="Actualizar" onAction="#actualizarFinca" style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
-            </HBox>
-            <HBox spacing="10.0" alignment="CENTER">
-                <Button text="Eliminar" onAction="#eliminarFinca" style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
-                <Button text="Limpiar" onAction="#limpiarFormulario"/>
-            </HBox>
-
-            <Label fx:id="lblMensaje" textFill="#d32f2f" visible="false" wrapText="true"/>
-        </VBox>
-    </left>
-
     <center>
-        <VBox spacing="10.0">
-            <padding><Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/></padding>
-            <Label fx:id="lblBienvenida" style="-fx-font-size: 16px;"/>
-            <TableView fx:id="tablaFincas" VBox.vgrow="ALWAYS">
-                <columns>
-                    <TableColumn fx:id="colId" text="ID" prefWidth="50">
-                        <cellValueFactory><PropertyValueFactory property="idFinca"/></cellValueFactory>
-                    </TableColumn>
-                    <TableColumn fx:id="colNombre" text="Nombre" prefWidth="150">
-                        <cellValueFactory><PropertyValueFactory property="nombre"/></cellValueFactory>
-                    </TableColumn>
-                    <TableColumn fx:id="colUbicacion" text="Ubicación" prefWidth="150">
-                        <cellValueFactory><PropertyValueFactory property="ubicacion"/></cellValueFactory>
-                    </TableColumn>
-                    <TableColumn fx:id="colRefCatastral" text="Ref. Catastral" prefWidth="150">
-                        <cellValueFactory><PropertyValueFactory property="refCatastral"/></cellValueFactory>
-                    </TableColumn>
-                    <TableColumn fx:id="colHectareas" text="Hectáreas" prefWidth="100">
-                        <cellValueFactory><PropertyValueFactory property="hectareas"/></cellValueFactory>
-                    </TableColumn>
-                </columns>
-            </TableView>
-        </VBox>
+        <TabPane tabClosingPolicy="UNAVAILABLE">
+
+            <Tab text="1. Gestión de Fincas">
+                <BorderPane>
+                    <left>
+                        <VBox spacing="15.0" style="-fx-background-color: #f4f4f4; -fx-border-color: #cccccc; -fx-border-width: 0 1 0 0;" prefWidth="300">
+                            <padding><Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/></padding>
+                            <Label text="Formulario Fincas" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+                            <TextField fx:id="txtIdFinca" visible="false" managed="false"/>
+
+                            <Label text="Nombre de la Finca:"/>
+                            <TextField fx:id="txtNombre" promptText="Ej: Finca El Teide"/>
+                            <Label text="Ubicación:"/>
+                            <TextField fx:id="txtUbicacion" promptText="Municipio / Zona"/>
+                            <Label text="Referencia Catastral:"/>
+                            <TextField fx:id="txtRefCatastral" promptText="20 caracteres"/>
+                            <Label text="Hectáreas (Ha):"/>
+                            <TextField fx:id="txtHectareas" promptText="Ej: 5.5"/>
+
+                            <HBox spacing="10.0" alignment="CENTER">
+                                <Button text="Crear" onAction="#crearFinca" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+                                <Button text="Actualizar" onAction="#actualizarFinca" style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
+                            </HBox>
+                            <HBox spacing="10.0" alignment="CENTER">
+                                <Button text="Eliminar" onAction="#eliminarFinca" style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
+                                <Button text="Limpiar" onAction="#limpiarFormFinca"/>
+                            </HBox>
+                            <Label fx:id="lblMensajeFinca" textFill="#d32f2f" visible="false" wrapText="true"/>
+                        </VBox>
+                    </left>
+                    <center>
+                        <VBox spacing="10.0">
+                            <padding><Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/></padding>
+                            <Label fx:id="lblBienvenida" style="-fx-font-size: 16px;"/>
+                            <TableView fx:id="tablaFincas" VBox.vgrow="ALWAYS">
+                                <columns>
+                                    <TableColumn text="ID" prefWidth="50"><cellValueFactory><PropertyValueFactory property="idFinca"/></cellValueFactory></TableColumn>
+                                    <TableColumn text="Nombre" prefWidth="150"><cellValueFactory><PropertyValueFactory property="nombre"/></cellValueFactory></TableColumn>
+                                    <TableColumn text="Ubicación" prefWidth="150"><cellValueFactory><PropertyValueFactory property="ubicacion"/></cellValueFactory></TableColumn>
+                                    <TableColumn text="Ref. Catastral" prefWidth="150"><cellValueFactory><PropertyValueFactory property="refCatastral"/></cellValueFactory></TableColumn>
+                                    <TableColumn text="Hectáreas" prefWidth="100"><cellValueFactory><PropertyValueFactory property="hectareas"/></cellValueFactory></TableColumn>
+                                </columns>
+                            </TableView>
+                        </VBox>
+                    </center>
+                </BorderPane>
+            </Tab>
+
+            <Tab text="2. Gestión de Parcelas">
+                <BorderPane>
+                    <left>
+                        <VBox spacing="15.0" style="-fx-background-color: #f4f4f4; -fx-border-color: #cccccc; -fx-border-width: 0 1 0 0;" prefWidth="300">
+                            <padding><Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/></padding>
+                            <Label text="Formulario Parcelas" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+                            <TextField fx:id="txtIdParcela" visible="false" managed="false"/>
+
+                            <Label text="Finca Padre:"/>
+                            <ComboBox fx:id="cbxFincaPadre" prefWidth="260" promptText="Selecciona Finca"/>
+
+                            <Label text="Código / Nombre Sector:"/>
+                            <TextField fx:id="txtSector" promptText="Ej: Sector Norte"/>
+                            <Label text="Tipo de Suelo:"/>
+                            <TextField fx:id="txtSuelo" promptText="Ej: Volcánico / Arcilloso"/>
+
+                            <HBox spacing="10.0" alignment="CENTER">
+                                <Button text="Crear" onAction="#crearParcela" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+                                <Button text="Actualizar" onAction="#actualizarParcela" style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
+                            </HBox>
+                            <HBox spacing="10.0" alignment="CENTER">
+                                <Button text="Eliminar" onAction="#eliminarParcela" style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
+                                <Button text="Limpiar" onAction="#limpiarFormParcela"/>
+                            </HBox>
+                            <Label fx:id="lblMensajeParcela" textFill="#d32f2f" visible="false" wrapText="true"/>
+                        </VBox>
+                    </left>
+                    <center>
+                        <VBox spacing="10.0">
+                            <padding><Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/></padding>
+                            <TableView fx:id="tablaParcelas" VBox.vgrow="ALWAYS">
+                                <columns>
+                                    <TableColumn text="ID" prefWidth="50"><cellValueFactory><PropertyValueFactory property="idParcela"/></cellValueFactory></TableColumn>
+                                    <TableColumn text="ID Finca" prefWidth="80"><cellValueFactory><PropertyValueFactory property="idFinca"/></cellValueFactory></TableColumn>
+                                    <TableColumn text="Código Sector" prefWidth="200"><cellValueFactory><PropertyValueFactory property="codigoSector"/></cellValueFactory></TableColumn>
+                                    <TableColumn text="Tipo de Suelo" prefWidth="200"><cellValueFactory><PropertyValueFactory property="tipoSuelo"/></cellValueFactory></TableColumn>
+                                </columns>
+                            </TableView>
+                        </VBox>
+                    </center>
+                </BorderPane>
+            </Tab>
+
+            <Tab text="3. Ciclo de Cultivo">
+                <BorderPane>
+                    <left>
+                        <VBox spacing="15.0" style="-fx-background-color: #f4f4f4; -fx-border-color: #cccccc; -fx-border-width: 0 1 0 0;" prefWidth="300">
+                            <padding><Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/></padding>
+                            <Label text="Formulario Cultivos" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+                            <TextField fx:id="txtIdCultivo" visible="false" managed="false"/>
+
+                            <Label text="Parcela de Siembra:"/>
+                            <ComboBox fx:id="cbxParcelaPadre" prefWidth="260" promptText="Selecciona Parcela"/>
+
+                            <Label text="Especie / Variedad:"/>
+                            <TextField fx:id="txtEspecie" promptText="Ej: Plátano Canario"/>
+
+                            <Label text="Fecha de Siembra:"/>
+                            <DatePicker fx:id="dpSiembra" prefWidth="260"/>
+
+                            <Label text="Fase Fenológica:"/>
+                            <ComboBox fx:id="cbxFase" prefWidth="260" promptText="Selecciona Estado"/>
+
+                            <Label text="Densidad Plantas (Cantidad):"/>
+                            <TextField fx:id="txtDensidad" promptText="Ej: 500"/>
+
+                            <HBox spacing="10.0" alignment="CENTER">
+                                <Button text="Crear" onAction="#crearCultivo" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+                                <Button text="Actualizar" onAction="#actualizarCultivo" style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
+                            </HBox>
+                            <HBox spacing="10.0" alignment="CENTER">
+                                <Button text="Eliminar" onAction="#eliminarCultivo" style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
+                                <Button text="Limpiar" onAction="#limpiarFormCultivo"/>
+                            </HBox>
+                            <Label fx:id="lblMensajeCultivo" textFill="#d32f2f" visible="false" wrapText="true"/>
+                        </VBox>
+                    </left>
+                    <center>
+                        <VBox spacing="10.0">
+                            <padding><Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/></padding>
+                            <TableView fx:id="tablaCultivos" VBox.vgrow="ALWAYS">
+                                <columns>
+                                    <TableColumn text="ID" prefWidth="50"><cellValueFactory><PropertyValueFactory property="idCultivo"/></cellValueFactory></TableColumn>
+                                    <TableColumn text="ID Parcela" prefWidth="80"><cellValueFactory><PropertyValueFactory property="idParcela"/></cellValueFactory></TableColumn>
+                                    <TableColumn text="Especie" prefWidth="150"><cellValueFactory><PropertyValueFactory property="especie"/></cellValueFactory></TableColumn>
+                                    <TableColumn text="Fase Actual" prefWidth="150"><cellValueFactory><PropertyValueFactory property="faseActual"/></cellValueFactory></TableColumn>
+                                    <TableColumn text="Fecha Siembra" prefWidth="120"><cellValueFactory><PropertyValueFactory property="fechaSiembra"/></cellValueFactory></TableColumn>
+                                    <TableColumn text="Nº Plantas" prefWidth="100"><cellValueFactory><PropertyValueFactory property="densidadPlantas"/></cellValueFactory></TableColumn>
+                                </columns>
+                            </TableView>
+                        </VBox>
+                    </center>
+                </BorderPane>
+            </Tab>
+
+        </TabPane>
     </center>
 </BorderPane>

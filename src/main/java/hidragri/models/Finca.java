@@ -37,4 +37,8 @@ public class Finca {
     public boolean isEstadoActiva() { return estadoActiva; }
     public void setEstadoActiva(boolean estadoActiva) { this.estadoActiva = estadoActiva; }
 
+    @Override
+    public String toString() {
+        return this.nombre + " (" + this.refCatastral + ")";
+    }
 }

@@ -20,6 +20,6 @@ public class Parcela {
 
     @Override
     public String toString() {
-        return "Sector: " + codigoSector;
+        return "Sector: " + this.codigoSector;
     }
 }

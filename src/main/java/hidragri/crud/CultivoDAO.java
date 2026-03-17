@@ -12,9 +12,10 @@ public class CultivoDAO {
         try (Connection con = DBConnection.getInstance().getConnection();
              PreparedStatement prestatem = con.prepareStatement(query)) {
             prestatem.setInt(1, cultivo.getIdParcela());
-            prestatem.setDate(2, Date.valueOf(cultivo.getFechaSiembra()));
-            prestatem.setString(3, cultivo.getFaseActual());
-            prestatem.setInt(4, cultivo.getDensidadPlantas());
+            prestatem.setString(2, cultivo.getEspecie()); // Faltaba esta línea
+            prestatem.setDate(3, Date.valueOf(cultivo.getFechaSiembra()));
+            prestatem.setString(4, cultivo.getFaseActual());
+            prestatem.setInt(5, cultivo.getDensidadPlantas());
             return prestatem.executeUpdate() > 0;
         } catch (SQLException e) { e.printStackTrace(); return false; }
     }
@@ -40,10 +41,11 @@ public class CultivoDAO {
         try (Connection con = DBConnection.getInstance().getConnection();
              PreparedStatement prestatem = con.prepareStatement(query)) {
             prestatem.setInt(1, cultivo.getIdParcela());
-            prestatem.setDate(2, Date.valueOf(cultivo.getFechaSiembra()));
-            prestatem.setString(3, cultivo.getFaseActual());
-            prestatem.setInt(4, cultivo.getDensidadPlantas());
-            prestatem.setInt(5, cultivo.getIdCultivo());
+            prestatem.setString(2, cultivo.getEspecie()); // Faltaba esta línea
+            prestatem.setDate(3, Date.valueOf(cultivo.getFechaSiembra()));
+            prestatem.setString(4, cultivo.getFaseActual());
+            prestatem.setInt(5, cultivo.getDensidadPlantas());
+            prestatem.setInt(6, cultivo.getIdCultivo());
             return prestatem.executeUpdate() > 0;
         } catch (SQLException e) { e.printStackTrace(); return false; }
     }
