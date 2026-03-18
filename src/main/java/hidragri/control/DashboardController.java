@@ -1,17 +1,18 @@
 package hidragri.control;
 
-import hidragri.crud.CultivoDAO;
-import hidragri.crud.FincaDAO;
-import hidragri.crud.ParcelaDAO;
-import hidragri.models.Cultivo;
-import hidragri.models.Finca;
-import hidragri.models.Parcela;
+import hidragri.crud.*;
+import hidragri.models.*;
+import hidragri.services.CsvImport;
+import hidragri.services.ReportManager;
 import hidragri.utils.Sesion;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.stage.FileChooser;
+import java.io.File;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class DashboardController {
@@ -37,10 +38,22 @@ public class DashboardController {
     @FXML private ComboBox<String> cbxFase;
     @FXML private Label lblMensajeCultivo;
 
-    // --- DAOs y Variables Globales ---
+    // --- VARIABLES RIEGOS (NUEVO) ---
+    @FXML private TableView<Riego> tablaRiegos;
+    @FXML private ComboBox<Parcela> cbxParcelaRiego;
+    @FXML private TextField txtMetros;
+    @FXML private ComboBox<String> cbxFuenteAgua;
+    @FXML private Label lblMensajeRiego;
+
+    // --- VARIABLES REPORTES (NUEVO) ---
+    @FXML private ComboBox<Finca> cbxFincaReporte;
+    @FXML private Label lblMensajeReporte;
+
+    // --- DAOs ---
     private final FincaDAO fincaDAO = new FincaDAO();
     private final ParcelaDAO parcelaDAO = new ParcelaDAO();
     private final CultivoDAO cultivoDAO = new CultivoDAO();
+    private final RiegoDAO riegoDAO = new RiegoDAO();
     private int idUsuarioActual;
 
     @FXML
@@ -50,10 +63,11 @@ public class DashboardController {
             lblBienvenida.setText("Sesión Activa: " + Sesion.getInstance().getUsuarioLogueado().getUsername());
         }
 
-        // Cargar Enumerado del Cultivo
+        // Cargar Enumerados del Sistema
         cbxFase.setItems(FXCollections.observableArrayList("SIEMBRA", "CRECIMIENTO", "COSECHA"));
+        cbxFuenteAgua.setItems(FXCollections.observableArrayList("AGUA_REGENERADA", "POZO", "GALERIA", "RED_PUBLICA"));
 
-        // Listeners para rellenar los formularios al hacer clic en las tablas
+        // Listeners
         tablaFincas.getSelectionModel().selectedItemProperty().addListener((obs, oldV, newV) -> {
             if (newV!= null) cargarFincaEnFormulario(newV);
         });
@@ -67,9 +81,7 @@ public class DashboardController {
         cargarTodosLosDatos();
     }
 
-    // --- MÉTODOS DE RECARGA DE DATOS ---
     private void cargarTodosLosDatos() {
-        // Cargar Tablas
         List<Finca> fincas = fincaDAO.fincaUser(idUsuarioActual);
         tablaFincas.setItems(FXCollections.observableArrayList(fincas));
 
@@ -79,23 +91,32 @@ public class DashboardController {
         List<Cultivo> cultivos = cultivoDAO.cultivoUser(idUsuarioActual);
         tablaCultivos.setItems(FXCollections.observableArrayList(cultivos));
 
-        // Rellenar las listas desplegables (ComboBox) para las relaciones
+        List<Riego> riegos = riegoDAO.riegoUser(idUsuarioActual);
+        tablaRiegos.setItems(FXCollections.observableArrayList(riegos));
+
+        // Rellenar ComboBoxs
         cbxFincaPadre.setItems(FXCollections.observableArrayList(fincas));
+        cbxFincaReporte.setItems(FXCollections.observableArrayList(fincas));
         cbxParcelaPadre.setItems(FXCollections.observableArrayList(parcelas));
+        cbxParcelaRiego.setItems(FXCollections.observableArrayList(parcelas));
     }
 
-    // =========================================================
-    //                    CRUD DE FINCAS
-    // =========================================================
+    private void mostrarMensaje(String texto, boolean esError, Label etiqueta) {
+        etiqueta.setText(texto);
+        etiqueta.setStyle(esError? "-fx-text-fill: red;" : "-fx-text-fill: green;");
+        etiqueta.setVisible(true);
+    }
+
+    // ================== CRUD FINCAS ==================
     @FXML private void crearFinca(ActionEvent event) {
         try {
             double hectareas = Double.parseDouble(txtHectareas.getText().replace(",", "."));
             Finca nueva = new Finca(0, idUsuarioActual, txtNombre.getText(), txtUbicacion.getText(), txtRefCatastral.getText(), hectareas, true);
             if (fincaDAO.insertFinca(nueva)) {
-                lblMensajeFinca.setText("Finca creada."); lblMensajeFinca.setVisible(true);
+                mostrarMensaje("Finca creada.", false, lblMensajeFinca);
                 cargarTodosLosDatos(); limpiarFormFinca();
             }
-        } catch (Exception e) { lblMensajeFinca.setText("Error en los datos."); lblMensajeFinca.setVisible(true); }
+        } catch (Exception e) { mostrarMensaje("Error en los datos.", true, lblMensajeFinca); }
     }
 
     @FXML private void actualizarFinca(ActionEvent event) {
@@ -105,7 +126,7 @@ public class DashboardController {
             if (fincaDAO.updateFinca(new Finca(id, idUsuarioActual, txtNombre.getText(), txtUbicacion.getText(), txtRefCatastral.getText(), hectareas, true))) {
                 cargarTodosLosDatos(); limpiarFormFinca();
             }
-        } catch (Exception e) { }
+        } catch (Exception e) {}
     }
 
     @FXML private void eliminarFinca(ActionEvent event) {
@@ -113,19 +134,17 @@ public class DashboardController {
             if (fincaDAO.deleteFinca(Integer.parseInt(txtIdFinca.getText()))) {
                 cargarTodosLosDatos(); limpiarFormFinca();
             }
-        } catch (Exception e) { }
+        } catch (Exception e) {}
     }
 
-    // =========================================================
-    //                    CRUD DE PARCELAS
-    // =========================================================
+    // ================== CRUD PARCELAS ==================
     @FXML private void crearParcela(ActionEvent event) {
         if (cbxFincaPadre.getValue() == null) {
-            lblMensajeParcela.setText("Debes seleccionar una finca padre."); lblMensajeParcela.setVisible(true); return;
+            mostrarMensaje("Selecciona una finca.", true, lblMensajeParcela); return;
         }
         Parcela nueva = new Parcela(0, cbxFincaPadre.getValue().getIdFinca(), txtSector.getText(), txtSuelo.getText());
         if (parcelaDAO.insertParcela(nueva)) {
-            lblMensajeParcela.setText("Parcela creada."); lblMensajeParcela.setVisible(true);
+            mostrarMensaje("Parcela creada.", false, lblMensajeParcela);
             cargarTodosLosDatos(); limpiarFormParcela();
         }
     }
@@ -135,7 +154,7 @@ public class DashboardController {
             int id = Integer.parseInt(txtIdParcela.getText());
             Parcela p = new Parcela(id, cbxFincaPadre.getValue().getIdFinca(), txtSector.getText(), txtSuelo.getText());
             if (parcelaDAO.updateParcela(p)) { cargarTodosLosDatos(); limpiarFormParcela(); }
-        } catch (Exception e) { }
+        } catch (Exception e) {}
     }
 
     @FXML private void eliminarParcela(ActionEvent event) {
@@ -143,24 +162,22 @@ public class DashboardController {
             if (parcelaDAO.deleteParcela(Integer.parseInt(txtIdParcela.getText()))) {
                 cargarTodosLosDatos(); limpiarFormParcela();
             }
-        } catch (Exception e) { }
+        } catch (Exception e) {}
     }
 
-    // =========================================================
-    //                    CRUD DE CULTIVOS
-    // =========================================================
+    // ================== CRUD CULTIVOS ==================
     @FXML private void crearCultivo(ActionEvent event) {
         try {
             if (cbxParcelaPadre.getValue() == null || dpSiembra.getValue() == null || cbxFase.getValue() == null) {
-                lblMensajeCultivo.setText("Rellena todos los combos y fechas."); lblMensajeCultivo.setVisible(true); return;
+                mostrarMensaje("Rellena todos los campos.", true, lblMensajeCultivo); return;
             }
             int numPlantas = Integer.parseInt(txtDensidad.getText());
             Cultivo nuevo = new Cultivo(0, cbxParcelaPadre.getValue().getIdParcela(), txtEspecie.getText(), dpSiembra.getValue(), cbxFase.getValue(), numPlantas);
             if (cultivoDAO.insertCultivo(nuevo)) {
-                lblMensajeCultivo.setText("Cultivo registrado."); lblMensajeCultivo.setVisible(true);
+                mostrarMensaje("Cultivo registrado.", false, lblMensajeCultivo);
                 cargarTodosLosDatos(); limpiarFormCultivo();
             }
-        } catch (Exception e) { lblMensajeCultivo.setText("Cantidad inválida."); lblMensajeCultivo.setVisible(true); }
+        } catch (Exception e) { mostrarMensaje("Cantidad inválida.", true, lblMensajeCultivo); }
     }
 
     @FXML private void actualizarCultivo(ActionEvent event) {
@@ -169,7 +186,7 @@ public class DashboardController {
             int numPlantas = Integer.parseInt(txtDensidad.getText());
             Cultivo c = new Cultivo(id, cbxParcelaPadre.getValue().getIdParcela(), txtEspecie.getText(), dpSiembra.getValue(), cbxFase.getValue(), numPlantas);
             if (cultivoDAO.updateCultivo(c)) { cargarTodosLosDatos(); limpiarFormCultivo(); }
-        } catch (Exception e) { }
+        } catch (Exception e) {}
     }
 
     @FXML private void eliminarCultivo(ActionEvent event) {
@@ -177,7 +194,75 @@ public class DashboardController {
             if (cultivoDAO.deleteCultivo(Integer.parseInt(txtIdCultivo.getText()))) {
                 cargarTodosLosDatos(); limpiarFormCultivo();
             }
-        } catch (Exception e) { }
+        } catch (Exception e) {}
+    }
+
+    // ================== CASO DE USO 5: RIEGOS Y CONSUMOS ==================
+    @FXML private void guardarRiegoManual(ActionEvent event) {
+        try {
+            if (cbxParcelaRiego.getValue() == null || cbxFuenteAgua.getValue() == null) {
+                mostrarMensaje("Faltan datos por seleccionar.", true, lblMensajeRiego); return;
+            }
+            double metros = Double.parseDouble(txtMetros.getText().replace(",", "."));
+            Riego rc = new Riego(0, cbxParcelaRiego.getValue().getIdParcela(), LocalDateTime.now(), metros, cbxFuenteAgua.getValue());
+
+            if (riegoDAO.insertRiego(rc)) {
+                mostrarMensaje("Riego registrado manualmente.", false, lblMensajeRiego);
+                cargarTodosLosDatos();
+                txtMetros.clear(); cbxFuenteAgua.setValue(null);
+            }
+        } catch (Exception e) { mostrarMensaje("El valor métrico es inválido.", true, lblMensajeRiego); }
+    }
+
+    @FXML private void importarCsvRiegos(ActionEvent event) {
+        if (cbxParcelaRiego.getValue() == null) {
+            mostrarMensaje("Selecciona la Parcela de destino primero.", true, lblMensajeRiego); return;
+        }
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Seleccionar archivo de consumos (.csv)");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos CSV", "*.csv"));
+        File archivoCsv = fileChooser.showOpenDialog(txtIdFinca.getScene().getWindow());
+
+        if (archivoCsv!= null) {
+            CsvImport tarea = new CsvImport(archivoCsv, cbxParcelaRiego.getValue().getIdParcela());
+
+            tarea.setOnSucceeded(e -> {
+                mostrarMensaje("Importación masiva completada: " + tarea.getValue() + " registros.", false, lblMensajeRiego);
+                cargarTodosLosDatos();
+            });
+
+            tarea.setOnFailed(e -> mostrarMensaje("El archivo CSV tiene un formato no válido.", true, lblMensajeRiego));
+
+            Thread hiloSecundario = new Thread(tarea);
+            hiloSecundario.setDaemon(true);
+            hiloSecundario.start();
+        }
+    }
+
+    // ================== CASO DE USO 6: INFORMES Y AUDITORÍA ==================
+    @FXML private void generarReportePdf(ActionEvent event) {
+        if (cbxFincaReporte.getValue() == null) {
+            mostrarMensaje("Por favor, selecciona una Finca.", true, lblMensajeReporte); return;
+        }
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Guardar Informe Analítico");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Documentos PDF", "*.pdf"));
+        fileChooser.setInitialFileName("Auditoria_Finca_" + cbxFincaReporte.getValue().getIdFinca() + ".pdf");
+
+        File archivoDestino = fileChooser.showSaveDialog(txtIdFinca.getScene().getWindow());
+
+        if (archivoDestino!= null) {
+            ReportManager gestorReportes = new ReportManager();
+            boolean exito = gestorReportes.exportarInforme(archivoDestino.getAbsolutePath(), cbxFincaReporte.getValue().getIdFinca());
+
+            if (exito) {
+                mostrarMensaje("PDF exportado correctamente en tu disco duro.", false, lblMensajeReporte);
+            } else {
+                mostrarMensaje("Fallo en el motor de JasperReports. Revisa la consola.", true, lblMensajeReporte);
+            }
+        }
     }
 
     // --- MÉTODOS DE RELLENADO DE FORMULARIO Y LIMPIEZA ---
@@ -188,7 +273,6 @@ public class DashboardController {
     @FXML private void limpiarFormFinca() {
         txtIdFinca.clear(); txtNombre.clear(); txtUbicacion.clear(); txtRefCatastral.clear(); txtHectareas.clear(); tablaFincas.getSelectionModel().clearSelection();
     }
-
     private void cargarParcelaEnFormulario(Parcela p) {
         txtIdParcela.setText(String.valueOf(p.getIdParcela())); txtSector.setText(p.getCodigoSector()); txtSuelo.setText(p.getTipoSuelo());
         cbxFincaPadre.getItems().stream().filter(f -> f.getIdFinca() == p.getIdFinca()).findFirst().ifPresent(cbxFincaPadre::setValue);
@@ -196,7 +280,6 @@ public class DashboardController {
     @FXML private void limpiarFormParcela() {
         txtIdParcela.clear(); txtSector.clear(); txtSuelo.clear(); cbxFincaPadre.setValue(null); tablaParcelas.getSelectionModel().clearSelection();
     }
-
     private void cargarCultivoEnFormulario(Cultivo c) {
         txtIdCultivo.setText(String.valueOf(c.getIdCultivo())); txtEspecie.setText(c.getEspecie());
         dpSiembra.setValue(c.getFechaSiembra()); cbxFase.setValue(c.getFaseActual()); txtDensidad.setText(String.valueOf(c.getDensidadPlantas()));
@@ -205,6 +288,5 @@ public class DashboardController {
     @FXML private void limpiarFormCultivo() {
         txtIdCultivo.clear(); txtEspecie.clear(); txtDensidad.clear(); dpSiembra.setValue(null); cbxFase.setValue(null); cbxParcelaPadre.setValue(null); tablaCultivos.getSelectionModel().clearSelection();
     }
-
     @FXML private void handleExit(ActionEvent event) { Platform.exit(); }
 }

@@ -4,7 +4,7 @@ module hidragri {
     requires java.sql;
     requires mysql.connector.j;
     requires jbcrypt;
-    requires opencsv;
+    requires com.opencsv;
     requires jasperreports;
 
     opens hidragri.control to javafx.fxml;

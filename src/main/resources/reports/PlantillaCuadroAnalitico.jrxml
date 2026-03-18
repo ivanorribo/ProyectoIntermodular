@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="CuadroAnaliticoConsumo" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+
+    <parameter name="ID_FINCA_SELECCIONADA" class="java.lang.Integer"/>
+
+    <queryString>
+        <![CDATA[
+            SELECT p.codigo_sector, r.fecha_riego, r.metros_cubicos, r.fuente_agua
+            FROM RIEGOS_CONSUMOS r
+            INNER JOIN PARCELAS p ON r.id_parcela = p.id_parcela
+            WHERE p.id_finca = $P{ID_FINCA_SELECCIONADA}
+            ORDER BY r.fecha_riego DESC
+        ]]>
+    </queryString>
+
+    <field name="codigo_sector" class="java.lang.String"/>
+    <field name="fecha_riego" class="java.sql.Timestamp"/>
+    <field name="metros_cubicos" class="java.lang.Double"/>
+    <field name="fuente_agua" class="java.lang.String"/>
+
+    <title>
+        <band height="50">
+            <staticText>
+                <reportElement x="0" y="10" width="555" height="30"/>
+                <textElement textAlignment="Center">
+                    <font size="18" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Cuadro Analítico de Consumo]]></text>
+            </staticText>
+        </band>
+    </title>
+
+    <columnHeader>
+        <band height="25">
+            <staticText>
+                <reportElement x="0" y="0" width="138" height="20"/>
+                <textElement><font isBold="true"/></textElement>
+                <text><![CDATA[Sector]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="138" y="0" width="138" height="20"/>
+                <textElement><font isBold="true"/></textElement>
+                <text><![CDATA[Fecha Riego]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="276" y="0" width="138" height="20"/>
+                <textElement><font isBold="true"/></textElement>
+                <text><![CDATA[m³ Consumidos]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="414" y="0" width="138" height="20"/>
+                <textElement><font isBold="true"/></textElement>
+                <text><![CDATA[Fuente Agua]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+
+    <detail>
+        <band height="20">
+            <textField>
+                <reportElement x="0" y="0" width="138" height="20"/>
+                <textFieldExpression><![CDATA[$F{codigo_sector}]]></textFieldExpression>
+            </textField>
+            <textField pattern="dd/MM/yyyy">
+                <reportElement x="138" y="0" width="138" height="20"/>
+                <textFieldExpression><![CDATA[$F{fecha_riego}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement x="276" y="0" width="138" height="20"/>
+                <textFieldExpression><![CDATA[$F{metros_cubicos}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="414" y="0" width="138" height="20"/>
+                <textFieldExpression><![CDATA[$F{fuente_agua}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+</jasperReport>
