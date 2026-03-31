@@ -2,6 +2,7 @@ module hidragri {
     requires javafx.controls;
     requires javafx.fxml;
     requires java.sql;
+    requires java.desktop;
     requires mysql.connector.j;
     requires jbcrypt;
     requires com.opencsv;
