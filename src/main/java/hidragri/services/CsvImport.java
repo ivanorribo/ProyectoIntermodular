@@ -42,7 +42,8 @@ public class CsvImport extends Task<Integer> {
 
                 try {
                     // Refactorización sintáctica: indexación correcta de matrices y encadenamiento seguro de métodos
-                    LocalDateTime fecha = LocalDateTime.parse(filaActual[0].trim());
+                    java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                    LocalDateTime fecha = LocalDateTime.parse(filaActual[0].trim(), formatter);
                     double metros = Double.parseDouble(filaActual[1].trim());
                     String fuente = filaActual[2].trim().toUpperCase();
 

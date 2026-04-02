@@ -8,8 +8,8 @@ public class DBConnection {
     private static DBConnection instance;
     private Connection connection;
     private final String url = "jdbc:mysql://localhost:3306/hidragri_db";
-    private final String user = "orribo";
-    private final String password = "Stormbreaker24.";
+    private final String user = "root";
+    private final String password = "";
 
     private DBConnection() {
         try {
