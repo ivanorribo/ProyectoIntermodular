@@ -49,3 +49,6 @@ CREATE TABLE RIEGOS_CONSUMOS (
     CONSTRAINT fk_riegos_parcela FOREIGN KEY (id_parcela) 
         REFERENCES PARCELAS(id_parcela) ON DELETE CASCADE
 ) ENGINE=InnoDB;
+
+INSERT INTO USUARIOS (username, password_hash, rol)
+VALUES ('Test', '$2a$12$aqjMMWq1KgRi71fb9UWd0uFJLSg5hOBuUZQVgwg.zw7fRMFWmyue2', 'AGRICULTOR');
